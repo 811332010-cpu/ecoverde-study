@@ -259,10 +259,74 @@
     <div class="ty-debrief"><strong>📋 Tiết lộ sau nghiên cứu:</strong> Trang khách sạn bạn vừa xem là <em>kịch bản giả lập</em> được tạo ra cho mục đích nghiên cứu. Mọi thông tin trong đó đều là hư cấu.</div>
     <div class="ty-code">Mã xác nhận tham gia:<span id="comp-code">RES-XXXX</span></div>
     <div class="ty-contact">Câu hỏi: <strong>researcher@university.edu.vn</strong></div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #eee;">
+      <div style="font-size:12px;color:#888;margin-bottom:10px;">👤 Nếu đây là máy dùng chung, người tiếp theo có thể bắt đầu tại đây:</div>
+      <button onclick="newParticipant()" style="width:100%;padding:11px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;font-size:13px;font-weight:600;color:#555;cursor:pointer;">Người tham gia tiếp theo →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Màn hình đã hoàn thành (hiện khi quay lại) -->
+<div id="s-done" class="screen">
+  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#003580,#0071c2);padding:30px 16px;">
+    <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+      <div style="font-size:50px;margin-bottom:16px;">✅</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Bạn đã hoàn thành khảo sát!</div>
+      <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:20px;">Cảm ơn bạn đã tham gia. Phản hồi của bạn đã được ghi nhận và không thể thay đổi.</div>
+      <div style="background:#f5f5f5;border-radius:8px;padding:12px;font-size:13px;color:#888;margin-bottom:20px;">
+        Mã xác nhận: <strong id="done-code" style="color:#003580;"></strong>
+      </div>
+      <div style="font-size:12px;color:#aaa;padding-top:16px;border-top:1px solid #eee;margin-bottom:12px;">👤 Nếu bạn là người khác sử dụng máy này:</div>
+      <button onclick="newParticipant()" style="width:100%;padding:12px;background:#003580;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Tôi là người tham gia mới →</button>
+    </div>
   </div>
 </div>
 
 <script>
+// ══════════════════════════════════════════════
+// KHỞI TẠO — Kiểm tra đã làm khảo sát chưa
+window.addEventListener('DOMContentLoaded', function() {
+  const done = localStorage.getItem('ecoverde_done');
+  if (done) {
+    // Đã làm rồi → hiện màn hình đã hoàn thành
+    document.getElementById('s-intro').classList.remove('active');
+    const doneScreen = document.getElementById('s-done');
+    doneScreen.style.display = 'block';
+    doneScreen.classList.add('active');
+    const code = localStorage.getItem('ecoverde_code') || 'RES-????';
+    document.getElementById('done-code').textContent = code;
+  }
+});
+
+function newParticipant() {
+  // Xóa localStorage → cho người mới bắt đầu
+  localStorage.removeItem('ecoverde_done');
+  localStorage.removeItem('ecoverde_code');
+  // Reset form state
+  checkAns = {q1:null, q2:null};
+  surveyAns = {};
+  cond = null;
+  startTime = null;
+  // Reset UI
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('picked'));
+  document.getElementById('btn-check').style.opacity = '0.4';
+  document.getElementById('btn-check').style.pointerEvents = 'none';
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('btn-submit').innerHTML = 'Hoàn thành và Gửi kết quả ✓';
+  // Hiện lại màn hình giới thiệu
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
+  const intro = document.getElementById('s-intro');
+  intro.style.display = 'flex';
+  intro.classList.add('active');
+  // Uncheck consent
+  document.getElementById('cb').checked = false;
+  document.getElementById('btn-go').classList.remove('on');
+  window.scrollTo(0,0);
+}
+
 // ══════════════════════════════════════════════
 // ⚠️  THAY THẾ DÒNG NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxx5BaMZ5QYBq7cn6zAW7E_2NYpu80dEanWD6mS6CLc3Ehw--x2tADguwpoHZHASdzqPA/exec";
@@ -452,6 +516,9 @@ async function submitSurvey(){
     });
   }catch(e){console.warn('Submit error:',e)}
 
+  // Lưu trạng thái đã hoàn thành vào localStorage
+  localStorage.setItem('ecoverde_done', '1');
+  localStorage.setItem('ecoverde_code', data.responseId);
   // Show completion code
   document.getElementById('comp-code').textContent=data.responseId;
   show('s-thanks');
