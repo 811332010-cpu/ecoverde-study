@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghiên cứu Trải nghiệm Đặt Phòng Trực tuyến</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#003580;--blue-mid:#0071c2;--blue-light:#e8f3ff;
+    --green-dark:#1b5e20;--green-mid:#2e7d32;--green-light:#e8f5e9;
+    --red-light:#fff5f5;--red-border:#ffc9c9;--red-text:#c0392b;
+    --amber-bg:#fff8e6;--amber-border:#ffd97a;--amber-text:#7d5a00;
+    --gray-50:#fafafa;--gray-100:#f5f5f5;--gray-200:#eee;
+    --gray-300:#ddd;--gray-500:#888;--gray-700:#555;--gray-900:#1a1a1a;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --r:10px;--r-sm:6px;
+  }
+  body{font-family:var(--font);background:#f0f2f5;color:var(--gray-900);min-height:100vh}
+  .screen{display:none;min-height:100vh}
+  .screen.active{display:block}
+
+  /* ── INTRO ── */
+  #s-intro{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#003580,#0071c2);padding:30px 16px;min-height:100vh}
+  .intro-card{background:#fff;border-radius:16px;padding:36px 32px;max-width:540px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+  .intro-logo{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+  .intro-univ{font-size:12px;color:var(--gray-500);padding-bottom:20px;border-bottom:1px solid var(--gray-200);margin-bottom:24px}
+  .intro-title{font-size:21px;font-weight:700;color:var(--gray-900);line-height:1.4;margin-bottom:12px}
+  .intro-desc{font-size:14px;color:var(--gray-700);line-height:1.7;margin-bottom:18px}
+  .consent-box{background:var(--gray-50);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--gray-700);line-height:1.6;margin-bottom:20px;border:1px solid var(--gray-200)}
+  .consent-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;cursor:pointer}
+  .consent-row input{width:17px;height:17px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:var(--blue-mid)}
+  .consent-row label{font-size:13px;color:var(--gray-700);cursor:pointer;line-height:1.5}
+  .btn-primary{width:100%;padding:14px;background:var(--blue-mid);color:#fff;border:none;border-radius:var(--r-sm);font-size:15px;font-weight:600;cursor:pointer;transition:.15s;opacity:.45;pointer-events:none}
+  .btn-primary.on{opacity:1;pointer-events:all}
+  .btn-primary.on:hover{background:var(--blue)}
+
+  /* ── SCENARIO ── */
+  #s-scenario{background:#f0f2f5;padding:20px 14px 36px}
+  .prog-wrap{max-width:700px;margin:0 auto 16px}
+  .prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--gray-500);margin-bottom:6px}
+  .prog-track{height:4px;background:var(--gray-200);border-radius:4px;overflow:hidden}
+  .prog-fill{height:100%;background:var(--blue-mid);border-radius:4px;transition:width .4s}
+
+  .hotel-wrap{max-width:700px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,.1);border-radius:var(--r);overflow:hidden}
+  .platform-bar{padding:9px 16px;font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+  .pb-ota{background:var(--blue)}
+  .pb-hotel{background:var(--green-dark)}
+  .platform-bar span{opacity:.7;font-weight:400}
+
+  .hotel-hero{height:150px;background:#4caf50;position:relative;display:flex;align-items:flex-end;padding:14px 18px}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent)}
+  .hero-text{position:relative;color:#fff}
+  .hero-name{font-size:20px;font-weight:700}
+  .hero-meta{font-size:12px;margin-top:3px;display:flex;align-items:center;gap:10px}
+  .cert{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700}
+
+  .hotel-body{background:#fff;padding:16px 18px}
+  .ai-box{border-radius:var(--r);padding:13px 15px;margin-bottom:16px;border:1.5px solid}
+  .ai-ota{background:var(--blue-light);border-color:#90caf9}
+  .ai-hotel{background:var(--green-light);border-color:#a5d6a7}
+  .ai-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+  .ai-ava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+  .ava-ota{background:var(--blue)}
+  .ava-hotel{background:var(--green-dark)}
+  .ai-name{font-size:13px;font-weight:700}
+  .ai-name-ota{color:var(--blue)}
+  .ai-name-hotel{color:var(--green-dark)}
+  .ai-badge{font-size:10px;padding:1px 6px;border-radius:3px;color:#fff;font-weight:700;margin-left:5px}
+  .badge-ota{background:var(--blue)}
+  .badge-hotel{background:var(--green-dark)}
+  .ai-sub{font-size:11px;color:var(--gray-500)}
+  .ai-text{font-size:13px;line-height:1.65;color:var(--gray-900)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .chip{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+  .chip-ota{background:#bbdefb;color:#0d47a1}
+  .chip-hotel{background:#c8e6c9;color:var(--green-dark)}
+
+  .sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200)}
+  .reviews{display:flex;flex-direction:column;gap:9px}
+  .rv{border-radius:var(--r-sm);padding:10px 13px}
+  .rv-neg{border:1px solid var(--red-border);background:var(--red-light)}
+  .rv-pos{border:1px solid #c8e6c9;background:#f9fff9}
+  .rv-flag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;background:#ffebee;color:var(--red-text);border:1px solid var(--red-border);border-radius:3px;padding:1px 6px;margin-bottom:5px}
+  .rv-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+  .rv-ava{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+  .av-red{background:#ffcdd2;color:#b71c1c}
+  .av-amb{background:#ffe0b2;color:#e65100}
+  .av-grn{background:#c8e6c9;color:var(--green-dark)}
+  .av-blu{background:#bbdefb;color:#0d47a1}
+  .rv-name{font-size:12px;font-weight:600}
+  .rv-meta{font-size:11px;color:var(--gray-500)}
+  .rv-stars{margin-left:auto;font-size:12px}
+  .son{color:#f59e0b}.sof{color:var(--gray-300)}
+  .rv-text{font-size:12px;line-height:1.6;color:var(--gray-700)}
+
+  .alert-box{margin-top:12px;border-radius:var(--r-sm);padding:10px 13px;font-size:12px;line-height:1.6}
+  .alert-warn{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text)}
+  .alert-ok{background:var(--green-light);border:1px solid #a5d6a7;color:var(--green-dark)}
+
+  .btn-next{display:block;margin:18px auto 0;padding:13px 40px;background:var(--blue-mid);color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:600;cursor:pointer;max-width:700px;width:100%;transition:.15s}
+  .btn-next:hover{background:var(--blue)}
+
+  /* ── CHECK & SURVEY ── */
+  #s-check,#s-survey{background:#f0f2f5;padding:20px 14px 40px}
+  .card{max-width:620px;margin:0 auto 14px;background:#fff;border-radius:var(--r);padding:26px 26px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+  .card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-500);margin-bottom:5px}
+  .card-title{font-size:17px;font-weight:700;color:var(--gray-900);margin-bottom:18px;line-height:1.4}
+  .q-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gray-200)}
+  .q-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q-text{font-size:14px;font-weight:500;color:var(--gray-900);margin-bottom:10px;line-height:1.5}
+  .q-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--blue-mid);color:#fff;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:6px;flex-shrink:0}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);cursor:pointer;font-size:13px;color:var(--gray-700);transition:.12s;user-select:none}
+  .opt:hover{border-color:var(--blue-mid);background:var(--blue-light)}
+  .opt.picked{border-color:var(--blue-mid);background:var(--blue-light);color:var(--blue);font-weight:500}
+  .opt input{display:none}
+
+  /* Likert */
+  .lk-scale{display:flex;gap:3px;margin-top:8px}
+  .lk-opt{flex:1;text-align:center}
+  .lk-opt input{display:none}
+  .lk-opt label{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 3px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);cursor:pointer;font-size:11px;color:var(--gray-500);transition:.12s}
+  .lk-opt label:hover{border-color:var(--blue-mid);background:var(--blue-light)}
+  .lk-opt input:checked+label{border-color:var(--blue-mid);background:var(--blue-light);color:var(--blue);font-weight:600}
+  .lk-num{font-size:15px;font-weight:700;color:var(--gray-700)}
+  .lk-opt input:checked+label .lk-num{color:var(--blue)}
+  .lk-anchors{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-500);margin-top:4px;padding:0 2px}
+
+  .btn-submit{display:block;width:100%;max-width:620px;margin:4px auto 0;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
+  .btn-submit:hover{background:var(--green-dark)}
+  .btn-submit:disabled{opacity:.5;cursor:not-allowed}
+
+  /* ── THANK YOU ── */
+  #s-thanks{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1b5e20,#2e7d32);padding:30px 16px}
+  .ty-card{background:#fff;border-radius:16px;padding:36px 30px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+  .ty-icon{font-size:50px;margin-bottom:14px}
+  .ty-title{font-size:22px;font-weight:700;color:var(--gray-900);margin-bottom:10px}
+  .ty-desc{font-size:14px;color:var(--gray-700);line-height:1.7;margin-bottom:18px}
+  .ty-debrief{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r-sm);padding:12px 14px;font-size:13px;color:var(--amber-text);text-align:left;line-height:1.6;margin-bottom:16px}
+  .ty-code{background:var(--gray-100);border-radius:var(--r-sm);padding:10px 16px;font-size:13px;color:var(--gray-700)}
+  .ty-code span{font-size:18px;font-weight:800;color:var(--blue);letter-spacing:2px;display:block;margin-top:3px}
+  .ty-contact{font-size:12px;color:var(--gray-500);margin-top:14px;line-height:1.7}
+
+  /* spinner */
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SCREEN 1: INTRO ══════════ -->
+<div id="s-intro" class="screen active">
+  <div class="intro-card">
+    <div class="intro-logo">Research Lab</div>
+    <div class="intro-univ">Khoa Du lịch & Khách sạn · Nghiên cứu Hành vi Người tiêu dùng</div>
+    <div class="intro-title">Nghiên cứu về Trải nghiệm Tìm kiếm Khách sạn Trực tuyến</div>
+    <div class="intro-desc">Cảm ơn bạn đã tham gia! Bạn sẽ xem một trang thông tin khách sạn và trả lời một số câu hỏi ngắn. <strong>Không có câu trả lời đúng hay sai.</strong> Mất khoảng <strong>5–8 phút.</strong></div>
+    <div class="consent-box"><strong>Bảo mật:</strong> Dữ liệu hoàn toàn ẩn danh và chỉ dùng cho mục đích học thuật. Bạn có thể dừng bất cứ lúc nào.</div>
+    <div class="consent-row">
+      <input type="checkbox" id="cb" onchange="document.getElementById('btn-go').classList.toggle('on',this.checked)">
+      <label for="cb">Tôi đã đọc thông tin và đồng ý tham gia nghiên cứu này.</label>
+    </div>
+    <button class="btn-primary" id="btn-go" onclick="startSurvey()">Bắt đầu →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 2: SCENARIO ══════════ -->
+<div id="s-scenario" class="screen">
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Bước 1/3 — Xem thông tin khách sạn</span><span>33%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:33%"></div></div>
+  </div>
+  <div class="hotel-wrap">
+    <div class="platform-bar pb-ota" id="pbar">
+      <span id="pbar-name">🌐 Booking.com</span>
+      <span id="pbar-sub">| Đặt phòng khách sạn · Tìm ưu đãi tốt nhất</span>
+    </div>
+    <div class="hotel-hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-text">
+        <div class="hero-name">EcoVerde Resort &amp; Spa ★★★★</div>
+        <div class="hero-meta">Đà Nẵng, Việt Nam <span class="cert">🌿 Green Key Certified</span></div>
+      </div>
+    </div>
+    <div class="hotel-body">
+      <div class="ai-box ai-ota" id="ai-box">
+        <div class="ai-head">
+          <div class="ai-ava ava-ota" id="ai-ava">AI</div>
+          <div>
+            <div class="ai-name ai-name-ota" id="ai-name">Booking.com AI Assistant <span class="ai-badge badge-ota" id="ai-badge">AI GỢI Ý</span></div>
+            <div class="ai-sub" id="ai-sub">Được hỗ trợ bởi AI · Dữ liệu được xác minh độc lập</div>
+          </div>
+        </div>
+        <div class="ai-text" id="ai-text"></div>
+        <div class="chips" id="ai-chips"></div>
+      </div>
+      <div class="sec-title">Đánh giá từ khách hàng đã ở</div>
+      <div class="reviews" id="reviews"></div>
+      <div class="alert-box" id="alert-box"></div>
+    </div>
+  </div>
+  <button class="btn-next" onclick="goCheck()">Tiếp theo →</button>
+</div>
+
+<!-- ══════════ SCREEN 3: MANIPULATION CHECK ══════════ -->
+<div id="s-check" class="screen">
+  <div class="prog-wrap" style="max-width:620px">
+    <div class="prog-label"><span>Bước 2/3 — Câu hỏi kiểm tra</span><span>66%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:66%"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Kiểm tra hiểu biết</div>
+    <div class="card-title">Dựa trên trang thông tin bạn vừa đọc:</div>
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span>Lời khuyên về môi trường bạn vừa đọc đến từ nguồn nào?</div>
+      <div class="opts" id="cq1">
+        <label class="opt" onclick="pickOpt(this,'cq1','A')"><input type="radio" name="cq1" value="A">Gợi ý từ AI của nền tảng đặt phòng (Booking.com)</label>
+        <label class="opt" onclick="pickOpt(this,'cq1','B')"><input type="radio" name="cq1" value="B">Gợi ý từ AI chatbot của chính khách sạn</label>
+        <label class="opt" onclick="pickOpt(this,'cq1','C')"><input type="radio" name="cq1" value="C">Đánh giá từ khách hàng đã ở trước đó</label>
+        <label class="opt" onclick="pickOpt(this,'cq1','D')"><input type="radio" name="cq1" value="D">Thông tin từ bộ phận marketing khách sạn</label>
+      </div>
+    </div>
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span>Nội dung đánh giá của khách hàng so với AI gợi ý là:</div>
+      <div class="opts" id="cq2">
+        <label class="opt" onclick="pickOpt(this,'cq2','A')"><input type="radio" name="cq2" value="A">Hoàn toàn nhất quán và đồng thuận với nhau</label>
+        <label class="opt" onclick="pickOpt(this,'cq2','B')"><input type="radio" name="cq2" value="B">Có mâu thuẫn — reviews phản ánh tiêu cực hơn AI gợi ý</label>
+        <label class="opt" onclick="pickOpt(this,'cq2','C')"><input type="radio" name="cq2" value="C">Không liên quan đến môi trường</label>
+        <label class="opt" onclick="pickOpt(this,'cq2','D')"><input type="radio" name="cq2" value="D">Tôi không nhớ nội dung reviews</label>
+      </div>
+    </div>
+    <button class="btn-next" id="btn-check" onclick="goSurvey()" style="opacity:.4;pointer-events:none">Tiếp theo →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 4: MAIN SURVEY ══════════ -->
+<div id="s-survey" class="screen">
+  <div class="prog-wrap" style="max-width:620px">
+    <div class="prog-label"><span>Bước 3/3 — Bảng câu hỏi chính</span><span>100%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Phần A — Nhận thức về Khách sạn</div>
+    <div class="card-title">Mức độ đồng ý với các nhận định sau<br><small style="font-size:12px;font-weight:400;color:#888">(1 = Hoàn toàn không đồng ý → 7 = Hoàn toàn đồng ý)</small></div>
+    <div id="likert-items"></div>
+  </div>
+
+  <button class="btn-submit" id="btn-submit" onclick="submitSurvey()">Hoàn thành và Gửi kết quả ✓</button>
+</div>
+
+<!-- ══════════ SCREEN 5: THANK YOU ══════════ -->
+<div id="s-thanks" class="screen">
+  <div class="ty-card">
+    <div class="ty-icon">🌿</div>
+    <div class="ty-title">Cảm ơn bạn rất nhiều!</div>
+    <div class="ty-desc">Sự tham gia của bạn đóng góp quan trọng cho nghiên cứu về hành vi người tiêu dùng và du lịch bền vững.</div>
+    <div class="ty-debrief"><strong>📋 Tiết lộ sau nghiên cứu:</strong> Trang khách sạn bạn vừa xem là <em>kịch bản giả lập</em> được tạo ra cho mục đích nghiên cứu. Mọi thông tin trong đó đều là hư cấu.</div>
+    <div class="ty-code">Mã xác nhận tham gia:<span id="comp-code">RES-XXXX</span></div>
+    <div class="ty-contact">Câu hỏi: <strong>researcher@university.edu.vn</strong></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// ⚠️  THAY THẾ DÒNG NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxx5BaMZ5QYBq7cn6zAW7E_2NYpu80dEanWD6mS6CLc3Ehw--x2tADguwpoHZHASdzqPA/exec";
+// ══════════════════════════════════════════════
+
+const CONDITIONS = {
+  A:{aiSrc:"ota",conflict:true,
+     aiText:'Khách sạn này nằm trong <strong>top 5% lựa chọn bền vững</strong> trên nền tảng Booking.com. Theo dữ liệu được xác minh độc lập, EcoVerde sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. <strong>Được khuyên dùng cho du khách có ý thức bảo vệ môi trường.</strong>',
+     chips:["85% năng lượng tái tạo","Không dùng nhựa 1 lần","Xác minh bởi bên thứ 3"]},
+  B:{aiSrc:"ota",conflict:false,
+     aiText:'Khách sạn này nằm trong <strong>top 5% lựa chọn bền vững</strong> trên nền tảng Booking.com. Theo dữ liệu được xác minh độc lập, EcoVerde sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. <strong>Được khuyên dùng cho du khách có ý thức bảo vệ môi trường.</strong>',
+     chips:["85% năng lượng tái tạo","Không dùng nhựa 1 lần","Xác minh bởi bên thứ 3"]},
+  C:{aiSrc:"hotel",conflict:true,
+     aiText:'Chào mừng quý khách đến với EcoVerde! Chúng tôi tự hào là <strong>khách sạn xanh hàng đầu tại Đà Nẵng</strong>. EcoVerde cam kết sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. Hãy để chúng tôi đồng hành cùng <strong>hành trình du lịch có trách nhiệm</strong> của quý khách!',
+     chips:["Cam kết của khách sạn","Tự công bố","Trợ lý nội bộ"]},
+  D:{aiSrc:"hotel",conflict:false,
+     aiText:'Chào mừng quý khách đến với EcoVerde! Chúng tôi tự hào là <strong>khách sạn xanh hàng đầu tại Đà Nẵng</strong>. EcoVerde cam kết sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. Hãy để chúng tôi đồng hành cùng <strong>hành trình du lịch có trách nhiệm</strong> của quý khách!',
+     chips:["Cam kết của khách sạn","Tự công bố","Trợ lý nội bộ"]}
+};
+
+const NEG_REVIEWS=[
+  {init:"NA",av:"av-red",name:"Nguyễn Văn A.",meta:"🇻🇳 Việt Nam · 2 tuần trước",stars:2,text:"Phòng khá đẹp nhưng thực sự thất vọng về cam kết môi trường. Ống hút nhựa, chai dầu gội nhựa nhỏ dùng một lần xuất hiện ở khắp nơi trong phòng tắm. Hoàn toàn trái ngược với những gì họ quảng bá."},
+  {init:"TH",av:"av-red",name:"Trần Minh H.",meta:"🇻🇳 Việt Nam · 1 tháng trước",stars:2,text:"Họ treo biển \"eco-friendly\" khắp nơi nhưng thùng rác không có phân loại, đèn hành lang và điều hòa sảnh sáng/chạy 24/7. Cảm giác như đây chỉ là chiêu marketing."},
+  {init:"LB",av:"av-amb",name:"Lê Thị B.",meta:"🇯🇵 Nhật Bản · 6 tuần trước",stars:3,text:"Cảnh quan đẹp, dịch vụ tốt. Nhưng tôi không tìm thấy bằng chứng thực tế nào của chứng chỉ xanh họ quảng bá. Hỏi nhân viên thì cũng không ai giải thích được rõ ràng."}
+];
+const POS_REVIEWS=[
+  {init:"PL",av:"av-grn",name:"Phạm Hồng L.",meta:"🇻🇳 Việt Nam · 2 tuần trước",stars:5,text:"Thực sự ấn tượng! Không hề dùng nhựa dùng một lần — chai đựng đồ dùng buồng tắm, ống hút đều là vật liệu tái chế hoặc tre. Rất đúng với những gì họ cam kết."},
+  {init:"VN",av:"av-grn",name:"Võ Thị N.",meta:"🇸🇬 Singapore · 1 tháng trước",stars:5,text:"Tôi đã ở nhiều khách sạn eco nhưng đây là nơi duy nhất thực sự làm đúng. Phân loại rác rõ ràng, nhân viên giải thích tận tình về các sáng kiến môi trường."},
+  {init:"HT",av:"av-blu",name:"Hoàng Anh T.",meta:"🇦🇺 Úc · 6 tuần trước",stars:4,text:"Hệ thống năng lượng mặt trời thực sự hoạt động — thấy bảng hiển thị lượng điện tái tạo ngay tại sảnh. Minh bạch và ấn tượng."}
+];
+
+const ITEMS=[
+  {id:"GW1",text:"Tôi nghĩ khách sạn này đang phóng đại cam kết môi trường của họ."},
+  {id:"GW2",text:"Các tuyên bố về môi trường của khách sạn này không đáng tin cậy."},
+  {id:"GW3",text:"Tôi nghi ngờ khách sạn này đang thực hiện \"greenwashing\" (tô vẽ hình ảnh xanh không trung thực)."},
+  {id:"SK1",text:"Tôi tin tưởng vào lời khuyên AI mà tôi vừa đọc khi đánh giá về môi trường của khách sạn."},
+  {id:"SK2",text:"Tôi tin tưởng vào đánh giá của khách hàng thực tế hơn là lời khuyên AI."},
+  {id:"SK3",text:"Nói chung, tôi hoài nghi về các tuyên bố bền vững của các khách sạn."},
+  {id:"BI1",text:"Tôi có ý định đặt phòng tại khách sạn EcoVerde trong tương lai."},
+  {id:"BI2",text:"Tôi sẽ giới thiệu khách sạn này cho bạn bè hoặc gia đình."}
+];
+
+// State
+let cond=null, startTime=null;
+let checkAns={q1:null,q2:null};
+let surveyAns={};
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  el.style.display='';
+  el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function starsHtml(n){
+  let h='';
+  for(let i=1;i<=5;i++) h+=`<span class="${i<=n?'son':'sof'}">★</span>`;
+  return h;
+}
+
+function startSurvey(){
+  cond=['A','B','C','D'][Math.floor(Math.random()*4)];
+  startTime=Date.now();
+  renderScenario();
+  buildLikert();
+  show('s-scenario');
+}
+
+function renderScenario(){
+  const c=CONDITIONS[cond];
+  const isOta=c.aiSrc==='ota';
+
+  // Platform bar
+  const pb=document.getElementById('pbar');
+  pb.className='platform-bar '+(isOta?'pb-ota':'pb-hotel');
+  document.getElementById('pbar-name').textContent=isOta?'🌐 Booking.com':'🌿 EcoVerde Resort';
+  document.getElementById('pbar-sub').textContent=isOta?'| Đặt phòng khách sạn · Tìm ưu đãi tốt nhất':'| Trợ lý AI của khách sạn · Hỏi đáp 24/7';
+
+  // AI box
+  document.getElementById('ai-box').className='ai-box '+(isOta?'ai-ota':'ai-hotel');
+  document.getElementById('ai-ava').className='ai-ava '+(isOta?'ava-ota':'ava-hotel');
+  document.getElementById('ai-name').className='ai-name '+(isOta?'ai-name-ota':'ai-name-hotel');
+  document.getElementById('ai-name').innerHTML=(isOta?'Booking.com AI Assistant':'EcoVerde AI Concierge')+
+    ` <span class="ai-badge ${isOta?'badge-ota':'badge-hotel'}">${isOta?'AI GỢI Ý':'TRỢ LÝ AI'}</span>`;
+  document.getElementById('ai-sub').textContent=isOta?
+    'Được hỗ trợ bởi AI · Dữ liệu được xác minh độc lập':
+    'Trợ lý AI riêng của EcoVerde Resort & Spa';
+  document.getElementById('ai-text').innerHTML=c.aiText;
+  document.getElementById('ai-chips').innerHTML=
+    c.chips.map(ch=>`<span class="chip ${isOta?'chip-ota':'chip-hotel'}">${ch}</span>`).join('');
+
+  // Reviews
+  const rvs=c.conflict?NEG_REVIEWS:POS_REVIEWS;
+  document.getElementById('reviews').innerHTML=rvs.map(r=>`
+    <div class="rv ${c.conflict?'rv-neg':'rv-pos'}">
+      ${c.conflict?'<div class="rv-flag">⚠ Mâu thuẫn với AI gợi ý</div>':''}
+      <div class="rv-head">
+        <div class="rv-ava ${r.av}">${r.init}</div>
+        <div><div class="rv-name">${r.name}</div><div class="rv-meta">${r.meta}</div></div>
+        <div class="rv-stars">${starsHtml(r.stars)}</div>
+      </div>
+      <div class="rv-text">${r.text}</div>
+    </div>`).join('');
+
+  // Alert
+  const ab=document.getElementById('alert-box');
+  if(c.conflict){
+    ab.className='alert-box alert-warn';
+    ab.innerHTML='⚠️ <strong>Lưu ý:</strong> Gợi ý AI đánh giá tích cực, tuy nhiên nhiều đánh giá khách hàng phản ánh trái chiều.';
+  } else {
+    ab.className='alert-box alert-ok';
+    ab.innerHTML='✅ <strong>Thông tin đồng thuận:</strong> AI và đánh giá khách hàng đều nhất quán về cam kết môi trường tích cực.';
+  }
+}
+
+function buildLikert(){
+  const container=document.getElementById('likert-items');
+  container.innerHTML=ITEMS.map((item,idx)=>`
+    <div class="q-block" style="${idx===ITEMS.length-1?'border-bottom:none;margin-bottom:0':''}">
+      <div class="q-text"><span class="q-num">${idx+1}</span>${item.text}</div>
+      <div class="lk-scale">
+        ${[1,2,3,4,5,6,7].map(n=>`
+          <div class="lk-opt">
+            <input type="radio" name="${item.id}" id="${item.id}_${n}" value="${n}" onchange="pickLk('${item.id}')">
+            <label for="${item.id}_${n}"><span class="lk-num">${n}</span></label>
+          </div>`).join('')}
+      </div>
+      <div class="lk-anchors"><span>Không đồng ý</span><span>Đồng ý</span></div>
+    </div>`).join('');
+}
+
+function goCheck(){
+  show('s-check');
+  document.querySelectorAll('.opt').forEach(o=>{
+    o.addEventListener('click',updateCheckBtn);
+  });
+}
+
+function pickOpt(el,group,val){
+  document.querySelectorAll(`#${group} .opt`).forEach(o=>o.classList.remove('picked'));
+  el.classList.add('picked');
+  checkAns[group==='cq1'?'q1':'q2']=val;
+  updateCheckBtn();
+}
+
+function updateCheckBtn(){
+  const btn=document.getElementById('btn-check');
+  const ready=checkAns.q1!==null&&checkAns.q2!==null;
+  btn.style.opacity=ready?'1':'0.4';
+  btn.style.pointerEvents=ready?'all':'none';
+}
+
+function goSurvey(){show('s-survey')}
+
+function pickLk(id){
+  surveyAns[id]=document.querySelector(`input[name="${id}"]:checked`)?.value||null;
+  const allFilled=ITEMS.every(i=>surveyAns[i.id]);
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=!allFilled;
+}
+
+async function submitSurvey(){
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>Đang gửi...';
+
+  const c=CONDITIONS[cond];
+  const data={
+    timestamp:new Date().toISOString(),
+    responseId:'R_'+Math.random().toString(36).substr(2,8).toUpperCase(),
+    condition:cond,
+    ai_source:c.aiSrc==='ota'?'OTA':'Hotel',
+    ewom_conflict:c.conflict?'Conflict':'NoConflict',
+    readTime_sec:Math.round((Date.now()-startTime)/1000),
+    mc1:checkAns.q1,
+    mc2:checkAns.q2,
+    ...Object.fromEntries(ITEMS.map(i=>[i.id,surveyAns[i.id]||'']))
+  };
+
+  try{
+    await fetch(SHEET_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    });
+  }catch(e){console.warn('Submit error:',e)}
+
+  // Show completion code
+  document.getElementById('comp-code').textContent=data.responseId;
+  show('s-thanks');
+}
+</script>
+</body>
+</html>
