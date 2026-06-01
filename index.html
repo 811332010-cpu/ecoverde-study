@@ -1,527 +1,594 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nghiên cứu Trải nghiệm Đặt Phòng Trực tuyến</title>
+<title>Online Hotel Booking Experience Study</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --blue:#003580;--blue-mid:#0071c2;--blue-light:#e8f3ff;
-    --green-dark:#1b5e20;--green-mid:#2e7d32;--green-light:#e8f5e9;
-    --red-light:#fff5f5;--red-border:#ffc9c9;--red-text:#c0392b;
-    --amber-bg:#fff8e6;--amber-border:#ffd97a;--amber-text:#7d5a00;
-    --gray-50:#fafafa;--gray-100:#f5f5f5;--gray-200:#eee;
-    --gray-300:#ddd;--gray-500:#888;--gray-700:#555;--gray-900:#1a1a1a;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue-dark:#003580; --blue-mid:#0071c2; --blue-light:#e8f3ff;
+    --green-dark:#006b3c; --green-mid:#1D9E75; --green-light:#e7f5ee;
+    --red-light:#fff0f0; --red-border:#ffc9c9; --red-text:#c0392b;
+    --amber-light:#fff8e6; --amber-border:#ffd97a; --amber-text:#7d5a00;
+    --gray-100:#f5f5f5; --gray-200:#ebebeb; --gray-300:#d9d9d9;
+    --gray-500:#888; --gray-700:#444; --gray-900:#1a1a1a; --text:#333;
     --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    --r:10px;--r-sm:6px;
+    --radius-sm:6px; --radius-md:10px; --radius-lg:14px;
   }
-  body{font-family:var(--font);background:#f0f2f5;color:var(--gray-900);min-height:100vh}
-  .screen{display:none;min-height:100vh}
-  .screen.active{display:block}
+  body { font-family:var(--font); background:#f0f2f5; color:var(--text); min-height:100vh; padding:0; }
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:block; }
 
-  /* ── INTRO ── */
-  #s-intro{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#003580,#0071c2);padding:30px 16px;min-height:100vh}
-  .intro-card{background:#fff;border-radius:16px;padding:36px 32px;max-width:540px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18)}
-  .intro-logo{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
-  .intro-univ{font-size:12px;color:var(--gray-500);padding-bottom:20px;border-bottom:1px solid var(--gray-200);margin-bottom:24px}
-  .intro-title{font-size:21px;font-weight:700;color:var(--gray-900);line-height:1.4;margin-bottom:12px}
-  .intro-desc{font-size:14px;color:var(--gray-700);line-height:1.7;margin-bottom:18px}
-  .consent-box{background:var(--gray-50);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--gray-700);line-height:1.6;margin-bottom:20px;border:1px solid var(--gray-200)}
-  .consent-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;cursor:pointer}
-  .consent-row input{width:17px;height:17px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:var(--blue-mid)}
-  .consent-row label{font-size:13px;color:var(--gray-700);cursor:pointer;line-height:1.5}
-  .btn-primary{width:100%;padding:14px;background:var(--blue-mid);color:#fff;border:none;border-radius:var(--r-sm);font-size:15px;font-weight:600;cursor:pointer;transition:.15s;opacity:.45;pointer-events:none}
-  .btn-primary.on{opacity:1;pointer-events:all}
-  .btn-primary.on:hover{background:var(--blue)}
+  /* INTRO */
+  #screen-intro { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#003580,#0071c2); padding:40px 20px; min-height:100vh; }
+  .intro-card { background:#fff; border-radius:var(--radius-lg); padding:40px 36px; max-width:560px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.15); }
+  .intro-logo { font-size:22px; font-weight:700; color:var(--blue-dark); margin-bottom:6px; }
+  .intro-logo span { color:var(--blue-mid); }
+  .intro-univ { font-size:12px; color:var(--gray-500); margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--gray-200); }
+  .intro-title { font-size:20px; font-weight:700; color:var(--gray-900); line-height:1.4; margin-bottom:14px; }
+  .intro-desc { font-size:14px; color:var(--gray-700); line-height:1.7; margin-bottom:20px; }
+  .consent-box { background:var(--gray-100); border-radius:var(--radius-sm); padding:14px 16px; font-size:13px; color:var(--gray-700); line-height:1.6; margin-bottom:24px; }
+  .consent-check { display:flex; align-items:flex-start; gap:10px; margin-bottom:24px; cursor:pointer; }
+  .consent-check input { margin-top:2px; width:16px; height:16px; cursor:pointer; flex-shrink:0; accent-color:var(--blue-mid); }
+  .consent-check label { font-size:13px; color:var(--gray-700); cursor:pointer; line-height:1.5; }
+  .btn-start { width:100%; padding:14px; background:var(--blue-mid); color:#fff; border:none; border-radius:var(--radius-sm); font-size:15px; font-weight:600; cursor:pointer; transition:.2s; opacity:.5; pointer-events:none; }
+  .btn-start.enabled { opacity:1; pointer-events:all; }
+  .btn-start.enabled:hover { background:var(--blue-dark); }
 
-  /* ── SCENARIO ── */
-  #s-scenario{background:#f0f2f5;padding:20px 14px 36px}
-  .prog-wrap{max-width:700px;margin:0 auto 16px}
-  .prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--gray-500);margin-bottom:6px}
-  .prog-track{height:4px;background:var(--gray-200);border-radius:4px;overflow:hidden}
-  .prog-fill{height:100%;background:var(--blue-mid);border-radius:4px;transition:width .4s}
+  /* SCENARIO */
+  #screen-scenario { background:#f0f2f5; padding:20px 16px 40px; }
+  .progress-bar-wrap { max-width:760px; margin:0 auto 16px; }
+  .progress-label { font-size:12px; color:var(--gray-500); margin-bottom:6px; display:flex; justify-content:space-between; }
+  .progress-track { height:4px; background:var(--gray-200); border-radius:4px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--blue-mid); border-radius:4px; transition:width .4s; }
+  .platform-header { max-width:760px; margin:0 auto 12px; padding:10px 16px; border-radius:var(--radius-md); display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; }
+  .ph-ota { background:var(--blue-dark); color:#fff; }
+  .ph-hotel { background:var(--green-dark); color:#fff; }
+  .ph-logo { font-size:16px; font-weight:800; letter-spacing:-.5px; }
+  .ph-divider { opacity:.4; }
+  .ph-subtitle { font-weight:400; font-size:12px; opacity:.85; }
+  .hotel-card { max-width:760px; margin:0 auto 14px; background:#fff; border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .hotel-img-strip { height:200px; background:linear-gradient(135deg,#1a3a1a 0%,#2d5a27 50%,#1a3a1a 100%); position:relative; display:flex; align-items:flex-end; padding:14px 18px; }
+  .hotel-img-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.5),transparent); }
+  .hotel-img-content { position:relative; z-index:1; color:#fff; }
+  .hotel-img-name { font-size:22px; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,.4); line-height:1.2; }
+  .hotel-img-meta { font-size:13px; opacity:.9; margin-top:4px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .cert-badge { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.5); border-radius:4px; padding:2px 8px; font-size:11px; font-weight:600; backdrop-filter:blur(4px); }
+  .hotel-info { padding:14px 18px; border-bottom:1px solid var(--gray-200); }
+  .hotel-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .tag { font-size:11px; padding:3px 9px; border-radius:20px; font-weight:500; }
+  .tag-green { background:var(--green-light); color:var(--green-dark); border:1px solid #b2dfdb; }
+  .tag-blue  { background:var(--blue-light);  color:var(--blue-dark);  border:1px solid #b3d4f5; }
+  .tag-gray  { background:var(--gray-100);    color:var(--gray-700);   border:1px solid var(--gray-300); }
+  .hotel-desc { font-size:13px; color:var(--gray-700); line-height:1.6; }
+  .ai-section { padding:16px 18px; border-bottom:1px solid var(--gray-200); }
+  .ai-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); margin-bottom:12px; }
+  .ai-box { border-radius:var(--radius-md); padding:14px 16px; border:1.5px solid; }
+  .ai-box-ota   { background:var(--blue-light);  border-color:#90caf9; }
+  .ai-box-hotel { background:var(--green-light); border-color:#a5d6a7; }
+  .ai-header { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+  .ai-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; color:#fff; }
+  .ai-avatar-ota   { background:var(--blue-dark); }
+  .ai-avatar-hotel { background:var(--green-dark); }
+  .ai-name-wrap {}
+  .ai-name { font-size:13px; font-weight:700; color:var(--gray-900); }
+  .ai-powered { font-size:11px; color:var(--gray-500); margin-top:2px; }
+  .ai-text { font-size:14px; line-height:1.7; color:var(--gray-900); margin-bottom:10px; }
+  .ai-chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .chip { font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600; }
+  .chip-ota   { background:#bbdefb; color:#0d47a1; }
+  .chip-hotel { background:#c8e6c9; color:#1b5e20; }
+  .reviews-section { padding:16px 18px; }
+  .reviews-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); margin-bottom:12px; }
+  .review-list { display:flex; flex-direction:column; gap:10px; }
+  .review-item { border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:12px 14px; background:#fff; }
+  .review-item.negative { border-color:var(--red-border); background:var(--red-light); }
+  .review-item.positive { border-color:#c8e6c9; background:#f9fff9; }
+  .review-head { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+  .reviewer-ava { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .ava-red   { background:#ffcdd2; color:#b71c1c; }
+  .ava-green { background:#c8e6c9; color:#1b5e20; }
+  .ava-blue  { background:#bbdefb; color:#0d47a1; }
+  .ava-amber { background:#ffe0b2; color:#e65100; }
+  .reviewer-name { font-size:13px; font-weight:600; color:var(--gray-900); }
+  .reviewer-meta { font-size:11px; color:var(--gray-500); }
+  .review-stars { margin-left:auto; font-size:13px; white-space:nowrap; }
+  .star-on  { color:#f59e0b; }
+  .star-off { color:var(--gray-300); }
+  .conflict-flag { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; background:#ffebee; color:var(--red-text); border:1px solid var(--red-border); border-radius:3px; padding:2px 7px; margin-bottom:6px; }
+  .review-text { font-size:13px; line-height:1.65; color:var(--gray-700); }
+  .info-alert { max-width:760px; margin:0 auto 14px; border-radius:var(--radius-md); padding:11px 14px; font-size:12px; line-height:1.6; display:flex; gap:9px; align-items:flex-start; }
+  .alert-conflict { background:var(--amber-light); border:1px solid var(--amber-border); color:var(--amber-text); }
+  .alert-agree    { background:var(--green-light); border:1px solid #a5d6a7; color:var(--green-dark); }
+  .alert-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+  .btn-continue-wrap { max-width:760px; margin:20px auto 0; text-align:right; }
+  .btn-continue { padding:13px 36px; background:var(--blue-mid); color:#fff; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:600; cursor:pointer; transition:.2s; box-shadow:0 2px 8px rgba(0,113,194,.25); }
+  .btn-continue:hover { background:var(--blue-dark); }
 
-  .hotel-wrap{max-width:700px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,.1);border-radius:var(--r);overflow:hidden}
-  .platform-bar{padding:9px 16px;font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
-  .pb-ota{background:var(--blue)}
-  .pb-hotel{background:var(--green-dark)}
-  .platform-bar span{opacity:.7;font-weight:400}
+  /* CHECK */
+  #screen-check { background:#f0f2f5; padding:20px 16px 40px; }
+  .check-card { max-width:600px; margin:0 auto; background:#fff; border-radius:var(--radius-lg); padding:28px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .check-header { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .check-title { font-size:18px; font-weight:700; color:var(--gray-900); margin-bottom:20px; line-height:1.4; }
+  .check-q { margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--gray-200); }
+  .check-q:last-of-type { border-bottom:none; }
+  .check-q-text { font-size:14px; font-weight:600; color:var(--gray-900); margin-bottom:10px; line-height:1.5; }
+  .check-options { display:flex; flex-direction:column; gap:8px; }
+  .check-opt { display:flex; align-items:center; gap:10px; padding:10px 14px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); cursor:pointer; font-size:13px; color:var(--gray-700); transition:.15s; user-select:none; }
+  .check-opt:hover { border-color:var(--blue-mid); color:var(--gray-900); background:var(--blue-light); }
+  .check-opt input[type=radio] { width:16px; height:16px; flex-shrink:0; cursor:pointer; }
+  .check-opt.selected { border-color:var(--blue-mid); background:var(--blue-light); color:var(--blue-dark); font-weight:500; }
+  .btn-check-continue { width:100%; margin-top:20px; padding:13px; background:var(--blue-mid); color:#fff; border:none; border-radius:var(--radius-sm); font-size:15px; font-weight:600; cursor:pointer; opacity:.5; pointer-events:none; transition:.2s; }
+  .btn-check-continue.enabled { opacity:1; pointer-events:all; }
+  .btn-check-continue.enabled:hover { background:var(--blue-dark); }
 
-  .hotel-hero{height:150px;background:#4caf50;position:relative;display:flex;align-items:flex-end;padding:14px 18px}
-  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent)}
-  .hero-text{position:relative;color:#fff}
-  .hero-name{font-size:20px;font-weight:700}
-  .hero-meta{font-size:12px;margin-top:3px;display:flex;align-items:center;gap:10px}
-  .cert{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700}
+  /* SURVEY */
+  #screen-survey { background:#f0f2f5; padding:20px 16px 40px; }
+  .survey-card { max-width:600px; margin:0 auto 14px; background:#fff; border-radius:var(--radius-lg); padding:28px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .survey-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .survey-title { font-size:17px; font-weight:700; color:var(--gray-900); margin-bottom:4px; line-height:1.4; }
+  .survey-subtitle { font-size:13px; color:var(--gray-500); margin-bottom:20px; }
+  .likert-q { margin-bottom:22px; }
+  .likert-q-text { font-size:14px; font-weight:500; color:var(--gray-900); margin-bottom:10px; line-height:1.5; }
+  .likert-q-num { display:inline-block; width:22px; height:22px; background:var(--blue-mid); color:#fff; border-radius:50%; font-size:11px; font-weight:700; text-align:center; line-height:22px; margin-right:6px; flex-shrink:0; }
+  .likert-scale { display:flex; align-items:stretch; gap:4px; }
+  .likert-option { flex:1; text-align:center; }
+  .likert-option input[type=radio] { display:none; }
+  .likert-option label { display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 4px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); cursor:pointer; font-size:11px; color:var(--gray-500); transition:.15s; height:100%; }
+  .likert-option label:hover { border-color:var(--blue-mid); background:var(--blue-light); }
+  .likert-option input:checked+label { border-color:var(--blue-mid); background:var(--blue-light); color:var(--blue-dark); font-weight:600; }
+  .likert-num { font-size:15px; font-weight:700; color:var(--gray-700); }
+  .likert-option input:checked+label .likert-num { color:var(--blue-dark); }
+  .likert-anchors { display:flex; justify-content:space-between; font-size:10px; color:var(--gray-500); margin-top:4px; padding:0 2px; }
+  .btn-submit-wrap { max-width:600px; margin:0 auto; }
+  .btn-submit { width:100%; padding:14px; background:var(--green-mid); color:#fff; border:none; border-radius:var(--radius-sm); font-size:15px; font-weight:700; cursor:pointer; transition:.2s; }
+  .btn-submit:hover { background:var(--green-dark); }
+  .btn-submit:disabled { opacity:.5; cursor:not-allowed; }
 
-  .hotel-body{background:#fff;padding:16px 18px}
-  .ai-box{border-radius:var(--r);padding:13px 15px;margin-bottom:16px;border:1.5px solid}
-  .ai-ota{background:var(--blue-light);border-color:#90caf9}
-  .ai-hotel{background:var(--green-light);border-color:#a5d6a7}
-  .ai-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
-  .ai-ava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
-  .ava-ota{background:var(--blue)}
-  .ava-hotel{background:var(--green-dark)}
-  .ai-name{font-size:13px;font-weight:700}
-  .ai-name-ota{color:var(--blue)}
-  .ai-name-hotel{color:var(--green-dark)}
-  .ai-badge{font-size:10px;padding:1px 6px;border-radius:3px;color:#fff;font-weight:700;margin-left:5px}
-  .badge-ota{background:var(--blue)}
-  .badge-hotel{background:var(--green-dark)}
-  .ai-sub{font-size:11px;color:var(--gray-500)}
-  .ai-text{font-size:13px;line-height:1.65;color:var(--gray-900)}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .chip{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
-  .chip-ota{background:#bbdefb;color:#0d47a1}
-  .chip-hotel{background:#c8e6c9;color:var(--green-dark)}
+  /* THANK YOU */
+  #screen-thankyou { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#006b3c,#1D9E75); min-height:100vh; padding:40px 20px; }
+  .thankyou-card { background:#fff; border-radius:var(--radius-lg); padding:40px 36px; max-width:480px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.15); }
+  .ty-icon { font-size:52px; margin-bottom:16px; }
+  .ty-title { font-size:24px; font-weight:700; color:var(--gray-900); margin-bottom:12px; }
+  .ty-desc { font-size:14px; color:var(--gray-700); line-height:1.7; margin-bottom:20px; }
+  .ty-code-box { background:var(--gray-100); border:1px solid var(--gray-300); border-radius:var(--radius-sm); padding:10px 16px; font-size:13px; color:var(--gray-700); margin-bottom:16px; }
+  .ty-code { font-size:18px; font-weight:800; color:var(--blue-dark); letter-spacing:2px; }
+  .ty-debrief { background:var(--amber-light); border:1px solid var(--amber-border); border-radius:var(--radius-sm); padding:12px 14px; font-size:13px; color:var(--amber-text); text-align:left; line-height:1.6; margin-bottom:16px; }
+  .contact-info { font-size:12px; color:var(--gray-500); line-height:1.7; }
+  .new-participant-btn { width:100%; margin-top:16px; padding:11px; background:var(--gray-100); border:1.5px solid var(--gray-300); border-radius:var(--radius-sm); font-size:13px; font-weight:600; color:var(--gray-700); cursor:pointer; transition:.15s; }
+  .new-participant-btn:hover { background:var(--gray-200); }
 
-  .sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gray-200)}
-  .reviews{display:flex;flex-direction:column;gap:9px}
-  .rv{border-radius:var(--r-sm);padding:10px 13px}
-  .rv-neg{border:1px solid var(--red-border);background:var(--red-light)}
-  .rv-pos{border:1px solid #c8e6c9;background:#f9fff9}
-  .rv-flag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;background:#ffebee;color:var(--red-text);border:1px solid var(--red-border);border-radius:3px;padding:1px 6px;margin-bottom:5px}
-  .rv-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-  .rv-ava{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-  .av-red{background:#ffcdd2;color:#b71c1c}
-  .av-amb{background:#ffe0b2;color:#e65100}
-  .av-grn{background:#c8e6c9;color:var(--green-dark)}
-  .av-blu{background:#bbdefb;color:#0d47a1}
-  .rv-name{font-size:12px;font-weight:600}
-  .rv-meta{font-size:11px;color:var(--gray-500)}
-  .rv-stars{margin-left:auto;font-size:12px}
-  .son{color:#f59e0b}.sof{color:var(--gray-300)}
-  .rv-text{font-size:12px;line-height:1.6;color:var(--gray-700)}
+  /* ALREADY DONE */
+  #screen-done { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#003580,#0071c2); min-height:100vh; padding:40px 20px; }
 
-  .alert-box{margin-top:12px;border-radius:var(--r-sm);padding:10px 13px;font-size:12px;line-height:1.6}
-  .alert-warn{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text)}
-  .alert-ok{background:var(--green-light);border:1px solid #a5d6a7;color:var(--green-dark)}
-
-  .btn-next{display:block;margin:18px auto 0;padding:13px 40px;background:var(--blue-mid);color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:600;cursor:pointer;max-width:700px;width:100%;transition:.15s}
-  .btn-next:hover{background:var(--blue)}
-
-  /* ── CHECK & SURVEY ── */
-  #s-check,#s-survey{background:#f0f2f5;padding:20px 14px 40px}
-  .card{max-width:620px;margin:0 auto 14px;background:#fff;border-radius:var(--r);padding:26px 26px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
-  .card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-500);margin-bottom:5px}
-  .card-title{font-size:17px;font-weight:700;color:var(--gray-900);margin-bottom:18px;line-height:1.4}
-  .q-block{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--gray-200)}
-  .q-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-  .q-text{font-size:14px;font-weight:500;color:var(--gray-900);margin-bottom:10px;line-height:1.5}
-  .q-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--blue-mid);color:#fff;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-right:6px;flex-shrink:0}
-  .opts{display:flex;flex-direction:column;gap:7px}
-  .opt{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);cursor:pointer;font-size:13px;color:var(--gray-700);transition:.12s;user-select:none}
-  .opt:hover{border-color:var(--blue-mid);background:var(--blue-light)}
-  .opt.picked{border-color:var(--blue-mid);background:var(--blue-light);color:var(--blue);font-weight:500}
-  .opt input{display:none}
-
-  /* Likert */
-  .lk-scale{display:flex;gap:3px;margin-top:8px}
-  .lk-opt{flex:1;text-align:center}
-  .lk-opt input{display:none}
-  .lk-opt label{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 3px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);cursor:pointer;font-size:11px;color:var(--gray-500);transition:.12s}
-  .lk-opt label:hover{border-color:var(--blue-mid);background:var(--blue-light)}
-  .lk-opt input:checked+label{border-color:var(--blue-mid);background:var(--blue-light);color:var(--blue);font-weight:600}
-  .lk-num{font-size:15px;font-weight:700;color:var(--gray-700)}
-  .lk-opt input:checked+label .lk-num{color:var(--blue)}
-  .lk-anchors{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-500);margin-top:4px;padding:0 2px}
-
-  .btn-submit{display:block;width:100%;max-width:620px;margin:4px auto 0;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
-  .btn-submit:hover{background:var(--green-dark)}
-  .btn-submit:disabled{opacity:.5;cursor:not-allowed}
-
-  /* ── THANK YOU ── */
-  #s-thanks{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1b5e20,#2e7d32);padding:30px 16px}
-  .ty-card{background:#fff;border-radius:16px;padding:36px 30px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-  .ty-icon{font-size:50px;margin-bottom:14px}
-  .ty-title{font-size:22px;font-weight:700;color:var(--gray-900);margin-bottom:10px}
-  .ty-desc{font-size:14px;color:var(--gray-700);line-height:1.7;margin-bottom:18px}
-  .ty-debrief{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r-sm);padding:12px 14px;font-size:13px;color:var(--amber-text);text-align:left;line-height:1.6;margin-bottom:16px}
-  .ty-code{background:var(--gray-100);border-radius:var(--r-sm);padding:10px 16px;font-size:13px;color:var(--gray-700)}
-  .ty-code span{font-size:18px;font-weight:800;color:var(--blue);letter-spacing:2px;display:block;margin-top:3px}
-  .ty-contact{font-size:12px;color:var(--gray-500);margin-top:14px;line-height:1.7}
-
-  /* spinner */
-  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  /* SPINNER */
+  .spinner { display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- ══════════ SCREEN 1: INTRO ══════════ -->
-<div id="s-intro" class="screen active">
+<!-- SCREEN 1: INTRO -->
+<div id="screen-intro" class="screen active">
   <div class="intro-card">
-    <div class="intro-logo">Research Lab</div>
-    <div class="intro-univ">Khoa Du lịch & Khách sạn · Nghiên cứu Hành vi Người tiêu dùng</div>
-    <div class="intro-title">Nghiên cứu về Trải nghiệm Tìm kiếm Khách sạn Trực tuyến</div>
-    <div class="intro-desc">Cảm ơn bạn đã tham gia! Bạn sẽ xem một trang thông tin khách sạn và trả lời một số câu hỏi ngắn. <strong>Không có câu trả lời đúng hay sai.</strong> Mất khoảng <strong>5–8 phút.</strong></div>
-    <div class="consent-box"><strong>Bảo mật:</strong> Dữ liệu hoàn toàn ẩn danh và chỉ dùng cho mục đích học thuật. Bạn có thể dừng bất cứ lúc nào.</div>
-    <div class="consent-row">
-      <input type="checkbox" id="cb" onchange="document.getElementById('btn-go').classList.toggle('on',this.checked)">
-      <label for="cb">Tôi đã đọc thông tin và đồng ý tham gia nghiên cứu này.</label>
+    <div class="intro-logo">Research<span>Lab</span></div>
+    <div class="intro-univ">Faculty of Tourism & Hospitality · Consumer Behavior Research</div>
+    <div class="intro-title">Study on Online Hotel Booking Experience</div>
+    <div class="intro-desc">
+      Thank you for participating! This study explores how travelers make hotel booking decisions using online platforms.<br><br>
+      You will view a hotel information page and answer a few short questions. <strong>There are no right or wrong answers.</strong> The entire process takes approximately <strong>5–8 minutes.</strong>
     </div>
-    <button class="btn-primary" id="btn-go" onclick="startSurvey()">Bắt đầu →</button>
+    <div class="consent-box">
+      <strong>Research Information:</strong> Your data will be kept completely confidential and used for academic purposes only. You may withdraw at any time without explanation.
+    </div>
+    <div class="consent-check">
+      <input type="checkbox" id="consent-cb" onchange="toggleStart()">
+      <label for="consent-cb">I have read the information above and voluntarily agree to participate in this study.</label>
+    </div>
+    <button class="btn-start" id="btn-start" onclick="startExperiment()">Get Started →</button>
   </div>
 </div>
 
-<!-- ══════════ SCREEN 2: SCENARIO ══════════ -->
-<div id="s-scenario" class="screen">
-  <div class="prog-wrap">
-    <div class="prog-label"><span>Bước 1/3 — Xem thông tin khách sạn</span><span>33%</span></div>
-    <div class="prog-track"><div class="prog-fill" style="width:33%"></div></div>
+<!-- SCREEN 2: SCENARIO -->
+<div id="screen-scenario" class="screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>Step 1 of 3 — View Hotel Information</span><span>33%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:33%"></div></div>
   </div>
-  <div class="hotel-wrap">
-    <div class="platform-bar pb-ota" id="pbar">
-      <span id="pbar-name">🌐 Booking.com</span>
-      <span id="pbar-sub">| Đặt phòng khách sạn · Tìm ưu đãi tốt nhất</span>
-    </div>
-    <div class="hotel-hero">
-      <div class="hero-overlay"></div>
-      <div class="hero-text">
-        <div class="hero-name">EcoVerde Resort &amp; Spa ★★★★</div>
-        <div class="hero-meta">Đà Nẵng, Việt Nam <span class="cert">🌿 Green Key Certified</span></div>
+
+  <div id="platform-header" class="platform-header ph-ota">
+    <div class="ph-logo" id="ph-logo">Booking.com</div>
+    <span class="ph-divider">|</span>
+    <span class="ph-subtitle" id="ph-subtitle">Book hotels · Find the best deals</span>
+  </div>
+
+  <div class="hotel-card">
+    <div class="hotel-img-strip" style="flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+      <div class="hotel-img-overlay"></div>
+      <img src="data:image/jpeg;base64,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" alt="EcoVerde Hotel Logo" style="position:relative;z-index:1;height:110px;width:auto;filter:brightness(0) invert(1) sepia(1) saturate(2) hue-rotate(60deg) brightness(1.3);" />
+      <div class="hotel-img-content" style="position:relative;z-index:1;text-align:center;">
+        <div class="hotel-img-name">EcoVerde Resort &amp; Spa</div>
+        <div class="hotel-img-meta" style="justify-content:center;">
+          <span>★★★★ Da Nang, Vietnam</span>
+          <span class="cert-badge">🌿 Green Key Certified</span>
+        </div>
       </div>
     </div>
-    <div class="hotel-body">
-      <div class="ai-box ai-ota" id="ai-box">
-        <div class="ai-head">
-          <div class="ai-ava ava-ota" id="ai-ava">AI</div>
-          <div>
-            <div class="ai-name ai-name-ota" id="ai-name">Booking.com AI Assistant <span class="ai-badge badge-ota" id="ai-badge">AI GỢI Ý</span></div>
-            <div class="ai-sub" id="ai-sub">Được hỗ trợ bởi AI · Dữ liệu được xác minh độc lập</div>
+
+    <div class="hotel-info">
+      <div class="hotel-tags">
+        <span class="tag tag-green">Eco-Friendly</span>
+        <span class="tag tag-green">Zero Waste Commitment</span>
+        <span class="tag tag-blue">Beachfront</span>
+        <span class="tag tag-gray">Spa &amp; Wellness</span>
+        <span class="tag tag-gray">Free Breakfast</span>
+      </div>
+      <div class="hotel-desc">
+        EcoVerde Resort &amp; Spa is nestled along My Khe Beach in Da Nang. The property is committed to sustainable operations, holding an international Green Key certification and implementing a range of local environmental initiatives.
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title" id="ai-section-title">Sustainability Highlights</div>
+      <div id="ai-box" class="ai-box ai-box-ota">
+        <div class="ai-header">
+          <div id="ai-avatar" class="ai-avatar ai-avatar-ota">★</div>
+          <div class="ai-name-wrap">
+            <div class="ai-name" id="ai-source-name">Booking.com</div>
+            <div class="ai-powered" id="ai-powered">Based on independently verified sustainability data</div>
           </div>
         </div>
-        <div class="ai-text" id="ai-text"></div>
-        <div class="chips" id="ai-chips"></div>
+        <div id="ai-text" class="ai-text"></div>
+        <div id="ai-chips" class="ai-chips"></div>
       </div>
-      <div class="sec-title">Đánh giá từ khách hàng đã ở</div>
-      <div class="reviews" id="reviews"></div>
-      <div class="alert-box" id="alert-box"></div>
     </div>
-  </div>
-  <button class="btn-next" onclick="goCheck()">Tiếp theo →</button>
-</div>
 
-<!-- ══════════ SCREEN 3: MANIPULATION CHECK ══════════ -->
-<div id="s-check" class="screen">
-  <div class="prog-wrap" style="max-width:620px">
-    <div class="prog-label"><span>Bước 2/3 — Câu hỏi kiểm tra</span><span>66%</span></div>
-    <div class="prog-track"><div class="prog-fill" style="width:66%"></div></div>
+    <div class="reviews-section">
+      <div class="reviews-section-title">Guest Reviews</div>
+      <div id="review-list" class="review-list"></div>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-label">Kiểm tra hiểu biết</div>
-    <div class="card-title">Dựa trên trang thông tin bạn vừa đọc:</div>
-    <div class="q-block">
-      <div class="q-text"><span class="q-num">1</span>Lời khuyên về môi trường bạn vừa đọc đến từ nguồn nào?</div>
-      <div class="opts" id="cq1">
-        <label class="opt" onclick="pickOpt(this,'cq1','A')"><input type="radio" name="cq1" value="A">Gợi ý từ AI của nền tảng đặt phòng (Booking.com)</label>
-        <label class="opt" onclick="pickOpt(this,'cq1','B')"><input type="radio" name="cq1" value="B">Gợi ý từ AI chatbot của chính khách sạn</label>
-        <label class="opt" onclick="pickOpt(this,'cq1','C')"><input type="radio" name="cq1" value="C">Đánh giá từ khách hàng đã ở trước đó</label>
-        <label class="opt" onclick="pickOpt(this,'cq1','D')"><input type="radio" name="cq1" value="D">Thông tin từ bộ phận marketing khách sạn</label>
-      </div>
-    </div>
-    <div class="q-block">
-      <div class="q-text"><span class="q-num">2</span>Nội dung đánh giá của khách hàng so với AI gợi ý là:</div>
-      <div class="opts" id="cq2">
-        <label class="opt" onclick="pickOpt(this,'cq2','A')"><input type="radio" name="cq2" value="A">Hoàn toàn nhất quán và đồng thuận với nhau</label>
-        <label class="opt" onclick="pickOpt(this,'cq2','B')"><input type="radio" name="cq2" value="B">Có mâu thuẫn — reviews phản ánh tiêu cực hơn AI gợi ý</label>
-        <label class="opt" onclick="pickOpt(this,'cq2','C')"><input type="radio" name="cq2" value="C">Không liên quan đến môi trường</label>
-        <label class="opt" onclick="pickOpt(this,'cq2','D')"><input type="radio" name="cq2" value="D">Tôi không nhớ nội dung reviews</label>
-      </div>
-    </div>
-    <button class="btn-next" id="btn-check" onclick="goSurvey()" style="opacity:.4;pointer-events:none">Tiếp theo →</button>
+
+  <div id="info-alert" class="info-alert alert-conflict">
+    <span class="alert-icon">⚠️</span>
+    <span id="alert-text"></span>
+  </div>
+
+  <div class="btn-continue-wrap">
+    <button class="btn-continue" onclick="goToCheck()">Next →</button>
   </div>
 </div>
 
-<!-- ══════════ SCREEN 4: MAIN SURVEY ══════════ -->
-<div id="s-survey" class="screen">
-  <div class="prog-wrap" style="max-width:620px">
-    <div class="prog-label"><span>Bước 3/3 — Bảng câu hỏi chính</span><span>100%</span></div>
-    <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+<!-- SCREEN 3: MANIPULATION CHECK -->
+<div id="screen-check" class="screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>Step 2 of 3 — Comprehension Check</span><span>66%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:66%"></div></div>
   </div>
-
-  <div class="card">
-    <div class="card-label">Phần A — Nhận thức về Khách sạn</div>
-    <div class="card-title">Mức độ đồng ý với các nhận định sau<br><small style="font-size:12px;font-weight:400;color:#888">(1 = Hoàn toàn không đồng ý → 7 = Hoàn toàn đồng ý)</small></div>
-    <div id="likert-items"></div>
+  <div class="check-card">
+    <div class="check-header">Comprehension Check</div>
+    <div class="check-title">Based on the hotel page you just viewed, please answer the following:</div>
+    <div class="check-q">
+      <div class="check-q-text">1. The sustainability information you just read came from which source?</div>
+      <div class="check-options" id="check-q1">
+        <label class="check-opt"><input type="radio" name="cq1" value="A"> A recommendation from an online booking platform (Booking.com)</label>
+        <label class="check-opt"><input type="radio" name="cq1" value="B"> A recommendation from the hotel's own concierge service</label>
+        <label class="check-opt"><input type="radio" name="cq1" value="C"> Reviews written by previous guests</label>
+        <label class="check-opt"><input type="radio" name="cq1" value="D"> Information from the hotel's marketing department</label>
+      </div>
+    </div>
+    <div class="check-q">
+      <div class="check-q-text">2. Compared to the sustainability recommendation, the guest reviews were:</div>
+      <div class="check-options" id="check-q2">
+        <label class="check-opt"><input type="radio" name="cq2" value="A"> Fully consistent and in agreement</label>
+        <label class="check-opt"><input type="radio" name="cq2" value="B"> Conflicting — reviews were more negative than the recommendation</label>
+        <label class="check-opt"><input type="radio" name="cq2" value="C"> Unrelated to environmental matters</label>
+        <label class="check-opt"><input type="radio" name="cq2" value="D"> I don't recall the content of the reviews</label>
+      </div>
+    </div>
+    <button class="btn-check-continue" id="btn-check-go" onclick="goToSurvey()">Next →</button>
   </div>
-
-  <button class="btn-submit" id="btn-submit" onclick="submitSurvey()">Hoàn thành và Gửi kết quả ✓</button>
 </div>
 
-<!-- ══════════ SCREEN 5: THANK YOU ══════════ -->
-<div id="s-thanks" class="screen">
-  <div class="ty-card">
+<!-- SCREEN 4: MAIN SURVEY -->
+<div id="screen-survey" class="screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>Step 3 of 3 — Main Questionnaire</span><span>100%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+  </div>
+
+  <div class="survey-card">
+    <div class="survey-section-title">Section A — Hotel Perception</div>
+    <div class="survey-title">Environmental Commitment Assessment</div>
+    <div class="survey-subtitle">Based on what you just read, rate your agreement with each statement (1 = Strongly Disagree, 7 = Strongly Agree)</div>
+    <div class="likert-q">
+      <div class="likert-q-text"><span class="likert-q-num">1</span>I believe this hotel exaggerates its environmental commitments.</div>
+      <div class="likert-scale" id="gw1"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+    <div class="likert-q">
+      <div class="likert-q-text"><span class="likert-q-num">2</span>The environmental claims made by this hotel are not credible.</div>
+      <div class="likert-scale" id="gw2"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+    <div class="likert-q" style="margin-bottom:0">
+      <div class="likert-q-text"><span class="likert-q-num">3</span>I suspect this hotel is engaging in greenwashing.</div>
+      <div class="likert-scale" id="gw3"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="survey-card">
+    <div class="survey-section-title">Section B — Source Trust</div>
+    <div class="survey-title">Information Credibility</div>
+    <div class="survey-subtitle">1 = Strongly Disagree → 7 = Strongly Agree</div>
+    <div class="likert-q">
+      <div class="likert-q-text"><span class="likert-q-num">4</span>I trust the sustainability recommendation I just read when evaluating this hotel.</div>
+      <div class="likert-scale" id="sk1"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+    <div class="likert-q">
+      <div class="likert-q-text"><span class="likert-q-num">5</span>I trust the guest reviews more than the sustainability recommendation.</div>
+      <div class="likert-scale" id="sk2"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+    <div class="likert-q" style="margin-bottom:0">
+      <div class="likert-q-text"><span class="likert-q-num">6</span>In general, I am skeptical about green claims made by hotels.</div>
+      <div class="likert-scale" id="sk3"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="survey-card">
+    <div class="survey-section-title">Section C — Behavioral Intention</div>
+    <div class="survey-title">Booking Intention</div>
+    <div class="survey-subtitle">1 = Strongly Disagree → 7 = Strongly Agree</div>
+    <div class="likert-q">
+      <div class="likert-q-text"><span class="likert-q-num">7</span>I intend to book a stay at EcoVerde Resort in the future.</div>
+      <div class="likert-scale" id="bi1"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+    <div class="likert-q" style="margin-bottom:0">
+      <div class="likert-q-text"><span class="likert-q-num">8</span>I would recommend this hotel to friends or family.</div>
+      <div class="likert-scale" id="bi2"></div>
+      <div class="likert-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="btn-submit-wrap">
+    <button class="btn-submit" id="btn-submit" onclick="submitSurvey()" disabled>Submit Responses ✓</button>
+  </div>
+</div>
+
+<!-- SCREEN 5: THANK YOU -->
+<div id="screen-thankyou" class="screen">
+  <div class="thankyou-card">
     <div class="ty-icon">🌿</div>
-    <div class="ty-title">Cảm ơn bạn rất nhiều!</div>
-    <div class="ty-desc">Sự tham gia của bạn đóng góp quan trọng cho nghiên cứu về hành vi người tiêu dùng và du lịch bền vững.</div>
-    <div class="ty-debrief"><strong>📋 Tiết lộ sau nghiên cứu:</strong> Trang khách sạn bạn vừa xem là <em>kịch bản giả lập</em> được tạo ra cho mục đích nghiên cứu. Mọi thông tin trong đó đều là hư cấu.</div>
-    <div class="ty-code">Mã xác nhận tham gia:<span id="comp-code">RES-XXXX</span></div>
-    <div class="ty-contact">Câu hỏi: <strong>researcher@university.edu.vn</strong></div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #eee;">
-      <div style="font-size:12px;color:#888;margin-bottom:10px;">👤 Nếu đây là máy dùng chung, người tiếp theo có thể bắt đầu tại đây:</div>
-      <button onclick="newParticipant()" style="width:100%;padding:11px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:6px;font-size:13px;font-weight:600;color:#555;cursor:pointer;">Người tham gia tiếp theo →</button>
+    <div class="ty-title">Thank You!</div>
+    <div class="ty-desc">Your participation contributes meaningfully to research on sustainable tourism and consumer behavior.</div>
+    <div class="ty-debrief"><strong>📋 Debriefing:</strong> The hotel page you viewed was a <em>simulated scenario</em> created for research purposes. All information presented was fictional.</div>
+    <div class="ty-code-box">Completion Code:<br><span class="ty-code" id="comp-code">RES-XXXX</span></div>
+    <div class="contact-info">Questions? Contact: <strong>researcher@university.edu.vn</strong></div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid #eee;">
+      <div style="font-size:12px;color:#aaa;margin-bottom:10px;">👤 If this is a shared device, the next participant may start here:</div>
+      <button class="new-participant-btn" onclick="newParticipant()">New Participant →</button>
     </div>
   </div>
 </div>
 
-<!-- Màn hình đã hoàn thành (hiện khi quay lại) -->
-<div id="s-done" class="screen">
-  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#003580,#0071c2);padding:30px 16px;">
-    <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15);">
-      <div style="font-size:50px;margin-bottom:16px;">✅</div>
-      <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Bạn đã hoàn thành khảo sát!</div>
-      <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:20px;">Cảm ơn bạn đã tham gia. Phản hồi của bạn đã được ghi nhận và không thể thay đổi.</div>
-      <div style="background:#f5f5f5;border-radius:8px;padding:12px;font-size:13px;color:#888;margin-bottom:20px;">
-        Mã xác nhận: <strong id="done-code" style="color:#003580;"></strong>
-      </div>
-      <div style="font-size:12px;color:#aaa;padding-top:16px;border-top:1px solid #eee;margin-bottom:12px;">👤 Nếu bạn là người khác sử dụng máy này:</div>
-      <button onclick="newParticipant()" style="width:100%;padding:12px;background:#003580;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Tôi là người tham gia mới →</button>
-    </div>
+<!-- SCREEN 6: ALREADY COMPLETED -->
+<div id="screen-done" class="screen">
+  <div style="background:#fff;border-radius:16px;padding:40px 36px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+    <div style="font-size:52px;margin-bottom:16px;">✅</div>
+    <div style="font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Survey Already Completed</div>
+    <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:20px;">Thank you for your participation. Your response has been recorded and cannot be modified.</div>
+    <div style="background:#f5f5f5;border-radius:8px;padding:12px;font-size:13px;color:#888;margin-bottom:20px;">Completion Code: <strong id="done-code" style="color:#003580;"></strong></div>
+    <div style="font-size:12px;color:#aaa;padding-top:16px;border-top:1px solid #eee;margin-bottom:12px;">👤 If you are a different person using this device:</div>
+    <button onclick="newParticipant()" style="width:100%;padding:12px;background:#003580;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">I am a new participant →</button>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════
-// KHỞI TẠO — Kiểm tra đã làm khảo sát chưa
-window.addEventListener('DOMContentLoaded', function() {
-  const done = localStorage.getItem('ecoverde_done');
-  if (done) {
-    // Đã làm rồi → hiện màn hình đã hoàn thành
-    document.getElementById('s-intro').classList.remove('active');
-    const doneScreen = document.getElementById('s-done');
-    doneScreen.style.display = 'block';
-    doneScreen.classList.add('active');
-    const code = localStorage.getItem('ecoverde_code') || 'RES-????';
-    document.getElementById('done-code').textContent = code;
-  }
-});
-
-function newParticipant() {
-  // Xóa localStorage → cho người mới bắt đầu
-  localStorage.removeItem('ecoverde_done');
-  localStorage.removeItem('ecoverde_code');
-  // Reset form state
-  checkAns = {q1:null, q2:null};
-  surveyAns = {};
-  cond = null;
-  startTime = null;
-  // Reset UI
-  document.querySelectorAll('.opt').forEach(o => o.classList.remove('picked'));
-  document.getElementById('btn-check').style.opacity = '0.4';
-  document.getElementById('btn-check').style.pointerEvents = 'none';
-  document.getElementById('btn-submit').disabled = true;
-  document.getElementById('btn-submit').innerHTML = 'Hoàn thành và Gửi kết quả ✓';
-  // Hiện lại màn hình giới thiệu
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active');
-    s.style.display = '';
-  });
-  const intro = document.getElementById('s-intro');
-  intro.style.display = 'flex';
-  intro.classList.add('active');
-  // Uncheck consent
-  document.getElementById('cb').checked = false;
-  document.getElementById('btn-go').classList.remove('on');
-  window.scrollTo(0,0);
-}
-
-// ══════════════════════════════════════════════
-// ⚠️  THAY THẾ DÒNG NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN
+// ════════════════════════════════════════════
+// GOOGLE SHEETS URL
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxx5BaMZ5QYBq7cn6zAW7E_2NYpu80dEanWD6mS6CLc3Ehw--x2tADguwpoHZHASdzqPA/exec";
-// ══════════════════════════════════════════════
 
+// ════════════════════════════════════════════
+// CONDITIONS DATA
 const CONDITIONS = {
   A:{aiSrc:"ota",conflict:true,
-     aiText:'Khách sạn này nằm trong <strong>top 5% lựa chọn bền vững</strong> trên nền tảng Booking.com. Theo dữ liệu được xác minh độc lập, EcoVerde sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. <strong>Được khuyên dùng cho du khách có ý thức bảo vệ môi trường.</strong>',
-     chips:["85% năng lượng tái tạo","Không dùng nhựa 1 lần","Xác minh bởi bên thứ 3"]},
+     aiText:'EcoVerde Resort &amp; Spa ranks in the <strong>top 5% of sustainable properties</strong> on Booking.com. Based on independently verified data, the property operates on 85% renewable energy, maintains a closed-loop wastewater treatment system, and has been completely free of single-use plastics since 2022. <strong>Highly recommended for eco-conscious travelers.</strong>',
+     chips:["85% Renewable Energy","100% Plastic-Free","Third-Party Verified"]},
   B:{aiSrc:"ota",conflict:false,
-     aiText:'Khách sạn này nằm trong <strong>top 5% lựa chọn bền vững</strong> trên nền tảng Booking.com. Theo dữ liệu được xác minh độc lập, EcoVerde sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. <strong>Được khuyên dùng cho du khách có ý thức bảo vệ môi trường.</strong>',
-     chips:["85% năng lượng tái tạo","Không dùng nhựa 1 lần","Xác minh bởi bên thứ 3"]},
+     aiText:'EcoVerde Resort &amp; Spa ranks in the <strong>top 5% of sustainable properties</strong> on Booking.com. Based on independently verified data, the property operates on 85% renewable energy, maintains a closed-loop wastewater treatment system, and has been completely free of single-use plastics since 2022. <strong>Highly recommended for eco-conscious travelers.</strong>',
+     chips:["85% Renewable Energy","100% Plastic-Free","Third-Party Verified"]},
   C:{aiSrc:"hotel",conflict:true,
-     aiText:'Chào mừng quý khách đến với EcoVerde! Chúng tôi tự hào là <strong>khách sạn xanh hàng đầu tại Đà Nẵng</strong>. EcoVerde cam kết sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. Hãy để chúng tôi đồng hành cùng <strong>hành trình du lịch có trách nhiệm</strong> của quý khách!',
-     chips:["Cam kết của khách sạn","Tự công bố","Trợ lý nội bộ"]},
+     aiText:'Welcome to EcoVerde! We are proud to be <strong>Da Nang\'s leading sustainable resort</strong>. Our commitment includes 85% renewable energy use, an on-site water treatment facility, and the complete elimination of single-use plastics since 2022. We look forward to sharing our <strong>eco-journey</strong> with you!',
+     chips:["Our Commitment","Self-Disclosed","Concierge Service"]},
   D:{aiSrc:"hotel",conflict:false,
-     aiText:'Chào mừng quý khách đến với EcoVerde! Chúng tôi tự hào là <strong>khách sạn xanh hàng đầu tại Đà Nẵng</strong>. EcoVerde cam kết sử dụng 85% năng lượng tái tạo, vận hành hệ thống xử lý nước thải khép kín và đã loại bỏ hoàn toàn đồ nhựa dùng một lần từ năm 2022. Hãy để chúng tôi đồng hành cùng <strong>hành trình du lịch có trách nhiệm</strong> của quý khách!',
-     chips:["Cam kết của khách sạn","Tự công bố","Trợ lý nội bộ"]}
+     aiText:'Welcome to EcoVerde! We are proud to be <strong>Da Nang\'s leading sustainable resort</strong>. Our commitment includes 85% renewable energy use, an on-site water treatment facility, and the complete elimination of single-use plastics since 2022. We look forward to sharing our <strong>eco-journey</strong> with you!',
+     chips:["Our Commitment","Self-Disclosed","Concierge Service"]}
 };
 
 const NEG_REVIEWS=[
-  {init:"NA",av:"av-red",name:"Nguyễn Văn A.",meta:"🇻🇳 Việt Nam · 2 tuần trước",stars:2,text:"Phòng khá đẹp nhưng thực sự thất vọng về cam kết môi trường. Ống hút nhựa, chai dầu gội nhựa nhỏ dùng một lần xuất hiện ở khắp nơi trong phòng tắm. Hoàn toàn trái ngược với những gì họ quảng bá."},
-  {init:"TH",av:"av-red",name:"Trần Minh H.",meta:"🇻🇳 Việt Nam · 1 tháng trước",stars:2,text:"Họ treo biển \"eco-friendly\" khắp nơi nhưng thùng rác không có phân loại, đèn hành lang và điều hòa sảnh sáng/chạy 24/7. Cảm giác như đây chỉ là chiêu marketing."},
-  {init:"LB",av:"av-amb",name:"Lê Thị B.",meta:"🇯🇵 Nhật Bản · 6 tuần trước",stars:3,text:"Cảnh quan đẹp, dịch vụ tốt. Nhưng tôi không tìm thấy bằng chứng thực tế nào của chứng chỉ xanh họ quảng bá. Hỏi nhân viên thì cũng không ai giải thích được rõ ràng."}
+  {init:"NV",av:"ava-red",name:"Nguyen V.A.",meta:"🇻🇳 Vietnam · 2 weeks ago",stars:2,text:'The room itself was nice, but I was truly disappointed by their environmental claims. Single-use plastic straws and tiny plastic shampoo bottles were everywhere in the bathroom — completely contradicting what they advertise.'},
+  {init:"TM",av:"ava-red",name:"Tran M.H.",meta:"🇻🇳 Vietnam · 1 month ago",stars:2,text:'"Eco-friendly" signs are posted everywhere, yet the waste bins have no sorting system and the corridor lights and lobby air conditioning run 24/7. This feels like pure greenwashing marketing.'},
+  {init:"LT",av:"ava-amber",name:"Le T.B.",meta:"🇯🇵 Japan · 6 weeks ago",stars:3,text:"Beautiful scenery and good service, but I couldn't find any real evidence of the green certification they heavily promote. Asked several staff members and no one could clearly explain their sustainability practices."}
 ];
 const POS_REVIEWS=[
-  {init:"PL",av:"av-grn",name:"Phạm Hồng L.",meta:"🇻🇳 Việt Nam · 2 tuần trước",stars:5,text:"Thực sự ấn tượng! Không hề dùng nhựa dùng một lần — chai đựng đồ dùng buồng tắm, ống hút đều là vật liệu tái chế hoặc tre. Rất đúng với những gì họ cam kết."},
-  {init:"VN",av:"av-grn",name:"Võ Thị N.",meta:"🇸🇬 Singapore · 1 tháng trước",stars:5,text:"Tôi đã ở nhiều khách sạn eco nhưng đây là nơi duy nhất thực sự làm đúng. Phân loại rác rõ ràng, nhân viên giải thích tận tình về các sáng kiến môi trường."},
-  {init:"HT",av:"av-blu",name:"Hoàng Anh T.",meta:"🇦🇺 Úc · 6 tuần trước",stars:4,text:"Hệ thống năng lượng mặt trời thực sự hoạt động — thấy bảng hiển thị lượng điện tái tạo ngay tại sảnh. Minh bạch và ấn tượng."}
+  {init:"PH",av:"ava-green",name:"Pham H.L.",meta:"🇻🇳 Vietnam · 2 weeks ago",stars:5,text:"Truly impressive! Not a single piece of single-use plastic in sight — all toiletry containers and straws are made from recycled materials or bamboo. Exactly what they promise, delivered."},
+  {init:"VN",av:"ava-green",name:"Vo T.N.",meta:"🇸🇬 Singapore · 1 month ago",stars:5,text:"I've stayed at many self-proclaimed 'eco' hotels, but this is the only one that actually walks the talk. Waste sorting is clearly organized and the staff enthusiastically explain all their environmental initiatives."},
+  {init:"HA",av:"ava-blue",name:"Hoang A.T.",meta:"🇦🇺 Australia · 6 weeks ago",stars:4,text:"The solar energy system is genuinely operational — there's a real-time renewable power display right in the lobby. Transparent, credible, and impressive. Fully deserving of its green reputation."}
 ];
 
-const ITEMS=[
-  {id:"GW1",text:"Tôi nghĩ khách sạn này đang phóng đại cam kết môi trường của họ."},
-  {id:"GW2",text:"Các tuyên bố về môi trường của khách sạn này không đáng tin cậy."},
-  {id:"GW3",text:"Tôi nghi ngờ khách sạn này đang thực hiện \"greenwashing\" (tô vẽ hình ảnh xanh không trung thực)."},
-  {id:"SK1",text:"Tôi tin tưởng vào lời khuyên AI mà tôi vừa đọc khi đánh giá về môi trường của khách sạn."},
-  {id:"SK2",text:"Tôi tin tưởng vào đánh giá của khách hàng thực tế hơn là lời khuyên AI."},
-  {id:"SK3",text:"Nói chung, tôi hoài nghi về các tuyên bố bền vững của các khách sạn."},
-  {id:"BI1",text:"Tôi có ý định đặt phòng tại khách sạn EcoVerde trong tương lai."},
-  {id:"BI2",text:"Tôi sẽ giới thiệu khách sạn này cho bạn bè hoặc gia đình."}
-];
-
-// State
-let cond=null, startTime=null;
+// ════════════════════════════════════════════
+// STATE
+let assignedCondition=null, startTime=null;
 let checkAns={q1:null,q2:null};
 let surveyAns={};
+
+// ════════════════════════════════════════════
+// ON LOAD — check localStorage
+window.addEventListener('DOMContentLoaded',function(){
+  const done=localStorage.getItem('ecoverde_done');
+  if(done){
+    document.getElementById('screen-intro').classList.remove('active');
+    const ds=document.getElementById('screen-done');
+    ds.style.display='flex';
+    ds.classList.add('active');
+    document.getElementById('done-code').textContent=localStorage.getItem('ecoverde_code')||'RES-????';
+  }
+  buildLikerts();
+});
 
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
   el.style.display='';
+  if(id==='screen-thankyou'||id==='screen-done'||id==='screen-intro') el.style.display='flex';
   el.classList.add('active');
   window.scrollTo(0,0);
 }
 
 function starsHtml(n){
   let h='';
-  for(let i=1;i<=5;i++) h+=`<span class="${i<=n?'son':'sof'}">★</span>`;
+  for(let i=1;i<=5;i++) h+=`<span class="${i<=n?'star-on':'star-off'}">★</span>`;
   return h;
 }
 
-function startSurvey(){
-  cond=['A','B','C','D'][Math.floor(Math.random()*4)];
-  startTime=Date.now();
-  renderScenario();
-  buildLikert();
-  show('s-scenario');
-}
-
-function renderScenario(){
-  const c=CONDITIONS[cond];
-  const isOta=c.aiSrc==='ota';
-
-  // Platform bar
-  const pb=document.getElementById('pbar');
-  pb.className='platform-bar '+(isOta?'pb-ota':'pb-hotel');
-  document.getElementById('pbar-name').textContent=isOta?'🌐 Booking.com':'🌿 EcoVerde Resort';
-  document.getElementById('pbar-sub').textContent=isOta?'| Đặt phòng khách sạn · Tìm ưu đãi tốt nhất':'| Trợ lý AI của khách sạn · Hỏi đáp 24/7';
-
-  // AI box
-  document.getElementById('ai-box').className='ai-box '+(isOta?'ai-ota':'ai-hotel');
-  document.getElementById('ai-ava').className='ai-ava '+(isOta?'ava-ota':'ava-hotel');
-  document.getElementById('ai-name').className='ai-name '+(isOta?'ai-name-ota':'ai-name-hotel');
-  document.getElementById('ai-name').innerHTML=(isOta?'Booking.com AI Assistant':'EcoVerde AI Concierge')+
-    ` <span class="ai-badge ${isOta?'badge-ota':'badge-hotel'}">${isOta?'AI GỢI Ý':'TRỢ LÝ AI'}</span>`;
-  document.getElementById('ai-sub').textContent=isOta?
-    'Được hỗ trợ bởi AI · Dữ liệu được xác minh độc lập':
-    'Trợ lý AI riêng của EcoVerde Resort & Spa';
-  document.getElementById('ai-text').innerHTML=c.aiText;
-  document.getElementById('ai-chips').innerHTML=
-    c.chips.map(ch=>`<span class="chip ${isOta?'chip-ota':'chip-hotel'}">${ch}</span>`).join('');
-
-  // Reviews
-  const rvs=c.conflict?NEG_REVIEWS:POS_REVIEWS;
-  document.getElementById('reviews').innerHTML=rvs.map(r=>`
-    <div class="rv ${c.conflict?'rv-neg':'rv-pos'}">
-      ${c.conflict?'<div class="rv-flag">⚠ Mâu thuẫn với AI gợi ý</div>':''}
-      <div class="rv-head">
-        <div class="rv-ava ${r.av}">${r.init}</div>
-        <div><div class="rv-name">${r.name}</div><div class="rv-meta">${r.meta}</div></div>
-        <div class="rv-stars">${starsHtml(r.stars)}</div>
-      </div>
-      <div class="rv-text">${r.text}</div>
-    </div>`).join('');
-
-  // Alert
-  const ab=document.getElementById('alert-box');
-  if(c.conflict){
-    ab.className='alert-box alert-warn';
-    ab.innerHTML='⚠️ <strong>Lưu ý:</strong> Gợi ý AI đánh giá tích cực, tuy nhiên nhiều đánh giá khách hàng phản ánh trái chiều.';
-  } else {
-    ab.className='alert-box alert-ok';
-    ab.innerHTML='✅ <strong>Thông tin đồng thuận:</strong> AI và đánh giá khách hàng đều nhất quán về cam kết môi trường tích cực.';
-  }
-}
-
-function buildLikert(){
-  const container=document.getElementById('likert-items');
-  container.innerHTML=ITEMS.map((item,idx)=>`
-    <div class="q-block" style="${idx===ITEMS.length-1?'border-bottom:none;margin-bottom:0':''}">
-      <div class="q-text"><span class="q-num">${idx+1}</span>${item.text}</div>
-      <div class="lk-scale">
-        ${[1,2,3,4,5,6,7].map(n=>`
-          <div class="lk-opt">
-            <input type="radio" name="${item.id}" id="${item.id}_${n}" value="${n}" onchange="pickLk('${item.id}')">
-            <label for="${item.id}_${n}"><span class="lk-num">${n}</span></label>
-          </div>`).join('')}
-      </div>
-      <div class="lk-anchors"><span>Không đồng ý</span><span>Đồng ý</span></div>
-    </div>`).join('');
-}
-
-function goCheck(){
-  show('s-check');
-  document.querySelectorAll('.opt').forEach(o=>{
-    o.addEventListener('click',updateCheckBtn);
+function buildLikerts(){
+  ['gw1','gw2','gw3','sk1','sk2','sk3','bi1','bi2'].forEach(id=>{
+    const c=document.getElementById(id);
+    if(!c) return;
+    c.innerHTML='';
+    for(let i=1;i<=7;i++){
+      c.innerHTML+=`<div class="likert-option"><input type="radio" id="${id}_${i}" name="${id}" value="${i}" onchange="recordLikert('${id}')"><label for="${id}_${i}"><span class="likert-num">${i}</span></label></div>`;
+    }
   });
 }
 
-function pickOpt(el,group,val){
-  document.querySelectorAll(`#${group} .opt`).forEach(o=>o.classList.remove('picked'));
-  el.classList.add('picked');
-  checkAns[group==='cq1'?'q1':'q2']=val;
-  updateCheckBtn();
+function recordLikert(id){
+  surveyAns[id]=document.querySelector(`input[name="${id}"]:checked`)?.value||null;
+  const ids=['gw1','gw2','gw3','sk1','sk2','sk3','bi1','bi2'];
+  const allDone=ids.every(i=>surveyAns[i]);
+  document.getElementById('btn-submit').disabled=!allDone;
+}
+
+function toggleStart(){
+  const cb=document.getElementById('consent-cb');
+  document.getElementById('btn-start').classList.toggle('enabled',cb.checked);
+}
+
+function startExperiment(){
+  assignedCondition=['A','B','C','D'][Math.floor(Math.random()*4)];
+  startTime=Date.now();
+  renderScenario(assignedCondition);
+  show('screen-scenario');
+}
+
+function renderScenario(key){
+  const c=CONDITIONS[key];
+  const isOta=c.aiSrc==='ota';
+  const ph=document.getElementById('platform-header');
+  ph.className='platform-header '+(isOta?'ph-ota':'ph-hotel');
+  document.getElementById('ph-logo').textContent=isOta?'Booking.com':'EcoVerde Resort';
+  document.getElementById('ph-subtitle').textContent=isOta?'Book hotels · Find the best deals':'Hotel Concierge · Available 24/7';
+  document.getElementById('ai-section-title').textContent=isOta?'Sustainability Highlights':'Sustainability Commitment';
+  document.getElementById('ai-box').className='ai-box '+(isOta?'ai-box-ota':'ai-box-hotel');
+  document.getElementById('ai-avatar').className='ai-avatar '+(isOta?'ai-avatar-ota':'ai-avatar-hotel');
+  document.getElementById('ai-avatar').textContent=isOta?'★':'🌿';
+  document.getElementById('ai-source-name').textContent=isOta?'Booking.com':'EcoVerde Concierge';
+  document.getElementById('ai-powered').textContent=isOta?'Based on independently verified sustainability data':'Official property information · EcoVerde Resort & Spa';
+  document.getElementById('ai-text').innerHTML=c.aiText;
+  document.getElementById('ai-chips').innerHTML=c.chips.map(ch=>`<span class="chip ${isOta?'chip-ota':'chip-hotel'}">${ch}</span>`).join('');
+  const rvs=c.conflict?NEG_REVIEWS:POS_REVIEWS;
+  document.getElementById('review-list').innerHTML=rvs.map(r=>`
+    <div class="review-item ${c.conflict?'negative':'positive'}">
+      ${c.conflict?'<div class="conflict-flag">⚠ Conflicts with sustainability recommendation</div>':''}
+      <div class="review-head">
+        <div class="reviewer-ava ${r.av}">${r.init}</div>
+        <div><div class="reviewer-name">${r.name}</div><div class="reviewer-meta">${r.meta}</div></div>
+        <div class="review-stars">${starsHtml(r.stars)}</div>
+      </div>
+      <div class="review-text">${r.text}</div>
+    </div>`).join('');
+  const al=document.getElementById('info-alert');
+  if(c.conflict){
+    al.className='info-alert alert-conflict';
+    document.getElementById('alert-text').innerHTML='<strong>Note:</strong> The sustainability recommendation rates this property positively, however several guest reviews report contrary experiences.';
+    document.querySelector('#info-alert .alert-icon').textContent='⚠️';
+  } else {
+    al.className='info-alert alert-agree';
+    document.getElementById('alert-text').innerHTML='<strong>Consistent Information:</strong> Both the sustainability recommendation and guest reviews are in agreement about this property\'s positive environmental practices.';
+    document.querySelector('#info-alert .alert-icon').textContent='✅';
+  }
+}
+
+function goToCheck(){
+  show('screen-check');
+  document.querySelectorAll('.check-opt').forEach(opt=>{
+    opt.addEventListener('click',function(){
+      const nm=this.querySelector('input').name;
+      document.querySelectorAll(`input[name="${nm}"]`).forEach(r=>r.closest('.check-opt').classList.remove('selected'));
+      this.querySelector('input').checked=true;
+      this.classList.add('selected');
+      checkAns[nm==='cq1'?'q1':'q2']=this.querySelector('input').value;
+      updateCheckBtn();
+    });
+  });
 }
 
 function updateCheckBtn(){
-  const btn=document.getElementById('btn-check');
-  const ready=checkAns.q1!==null&&checkAns.q2!==null;
-  btn.style.opacity=ready?'1':'0.4';
-  btn.style.pointerEvents=ready?'all':'none';
+  const btn=document.getElementById('btn-check-go');
+  const ok=checkAns.q1!==null&&checkAns.q2!==null;
+  btn.classList.toggle('enabled',ok);
 }
 
-function goSurvey(){show('s-survey')}
-
-function pickLk(id){
-  surveyAns[id]=document.querySelector(`input[name="${id}"]:checked`)?.value||null;
-  const allFilled=ITEMS.every(i=>surveyAns[i.id]);
-  const btn=document.getElementById('btn-submit');
-  btn.disabled=!allFilled;
-}
+function goToSurvey(){ show('screen-survey'); }
 
 async function submitSurvey(){
   const btn=document.getElementById('btn-submit');
   btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span>Đang gửi...';
-
-  const c=CONDITIONS[cond];
+  btn.innerHTML='<span class="spinner"></span>Submitting...';
+  const c=CONDITIONS[assignedCondition];
   const data={
     timestamp:new Date().toISOString(),
     responseId:'R_'+Math.random().toString(36).substr(2,8).toUpperCase(),
-    condition:cond,
+    condition:assignedCondition,
     ai_source:c.aiSrc==='ota'?'OTA':'Hotel',
     ewom_conflict:c.conflict?'Conflict':'NoConflict',
     readTime_sec:Math.round((Date.now()-startTime)/1000),
-    mc1:checkAns.q1,
-    mc2:checkAns.q2,
-    ...Object.fromEntries(ITEMS.map(i=>[i.id,surveyAns[i.id]||'']))
+    mc1:checkAns.q1, mc2:checkAns.q2,
+    GW1:surveyAns.gw1||'', GW2:surveyAns.gw2||'', GW3:surveyAns.gw3||'',
+    SK1:surveyAns.sk1||'', SK2:surveyAns.sk2||'', SK3:surveyAns.sk3||'',
+    BI1:surveyAns.bi1||'', BI2:surveyAns.bi2||''
   };
-
   try{
-    await fetch(SHEET_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
-  }catch(e){console.warn('Submit error:',e)}
-
-  // Lưu trạng thái đã hoàn thành vào localStorage
-  localStorage.setItem('ecoverde_done', '1');
-  localStorage.setItem('ecoverde_code', data.responseId);
-  // Show completion code
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  }catch(e){console.warn('Submit:',e);}
+  localStorage.setItem('ecoverde_done','1');
+  localStorage.setItem('ecoverde_code',data.responseId);
   document.getElementById('comp-code').textContent=data.responseId;
-  show('s-thanks');
+  show('screen-thankyou');
+}
+
+function newParticipant(){
+  localStorage.removeItem('ecoverde_done');
+  localStorage.removeItem('ecoverde_code');
+  checkAns={q1:null,q2:null};
+  surveyAns={};
+  assignedCondition=null;
+  startTime=null;
+  document.querySelectorAll('.check-opt').forEach(o=>o.classList.remove('selected'));
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  document.getElementById('btn-check-go').classList.remove('enabled');
+  const bs=document.getElementById('btn-submit');
+  bs.disabled=true;
+  bs.innerHTML='Submit Responses ✓';
+  document.getElementById('consent-cb').checked=false;
+  document.getElementById('btn-start').classList.remove('enabled');
+  show('screen-intro');
 }
 </script>
 </body>
